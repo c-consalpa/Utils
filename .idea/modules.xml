@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FileUtils.iml" filepath="$PROJECT_DIR$/FileUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StringSearch/StringSearch.iml" filepath="$PROJECT_DIR$/StringSearch/StringSearch.iml" />
     </modules>
   </component>
 </project>
