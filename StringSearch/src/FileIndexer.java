@@ -1,8 +1,5 @@
 ;import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class FileIndexer {
@@ -31,14 +28,17 @@ public class FileIndexer {
         List<SearchResult> res = new ArrayList<>();
         String line = "";
         int lineNum = 1;
-//        Map<stringOccurenceCounte, StringOccurencePosition>
-        Map<Integer, Integer> stringOccurence = new HashMap<>();
-        try (BufferedReader bfReader = new BufferedReader(new FileReader(f));) {
 
+        Map<Integer, Integer> stringOccurence = new HashMap<>();
+
+        try (BufferedReader bfReader = new BufferedReader(new FileReader(f));) {
             while (null != (line = bfReader.readLine())) {
-                int occurenceCnt = searchOccurrences(line, str);
-                if (occurenceCnt > 0) {
-                    res.add(new SearchResult(str, f, lineNum));
+                Map<Integer, String> occurrences = searchOccurrences(line, str);
+                if (occurrences.size() > 0) {
+                    for (Integer i: occurrences.keySet()) {
+                        res.add(new SearchResult(str, f, lineNum));
+                    }
+
                 }
                 lineNum++;
             }
@@ -50,25 +50,38 @@ public class FileIndexer {
         return res;
     }
 
+
+
     public List<SearchResult> searchInDirectory(File searchArea, String str) {
         List<SearchResult> res = new ArrayList<>();
-        for (File f : traverseDir(this.searchArea)) {
+        List<File> dirContents = traverseDir(this.searchArea);
+        for (File f : dirContents) {
             res.addAll(searchInFile(f, str));
         }
         return res;
     }
 
-    private int searchOccurrences(String line, String pattern) {
-        if (line.isEmpty() || line.length() < pattern.length()) return 0;
-
+    private Map<Integer, String> searchOccurrences(String line, String pattern) {
+        if (line.isEmpty() || line.length() < pattern.length()) return null;
+        Map<Integer, String> occurrenceMap = new LinkedHashMap<>();
         int matchIndex = 0;
         int cnt = 0;
-
+//search for string occurrance in a line
         while ((matchIndex = line.indexOf(pattern, matchIndex))!= -1) {
-            matchIndex++;
+
+            String surroundingStr = getSurroundingString(line.substring(matchIndex), line.length(), pattern);
+//            Once we find "abc" => move 3 indexes forward;
+            occurrenceMap.put(matchIndex, surroundingStr);
+            matchIndex += pattern.length() - 1;
             cnt++;
+
+
         }
-        return cnt;
+        return occurrenceMap;
+    }
+
+    private String getSurroundingString(String substring, int length, String pattern) {
+        return "testSurrString";
     }
 
     private List<File> traverseDir(File startDir) {

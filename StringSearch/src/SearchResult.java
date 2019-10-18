@@ -15,8 +15,8 @@ public class SearchResult {
 
     @Override
     public String toString() {
-        return "Found: '" + searchPattern + "' " +
-                "in file: " + foundInFile.getName() + " " +
+        return  "Found: '" + searchPattern + "' "   +
+                "File: " + foundInFile.getName() + "; " +
                 "Line: " + foundInLine + "\n";
     }
 }
