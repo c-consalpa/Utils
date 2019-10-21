@@ -4,15 +4,14 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
             Scanner scanner = new Scanner(System.in);
-            String location = "D:\\java\\FileUtils\\New Text Document.txt",
-                    searchString = "abc";
+            String location = "D:\\GIT\\eam-xe-xes-help-center\\Content\\Edifecs_Library", searchString = "Balance";
 
-
+//
 //                System.out.println("Enter location:");
-//                location = scanner.nextLine();
+//                String location = scanner.nextLine();
 //                System.out.println(location);
 //                System.out.println("Enter search string:");
-//                searchString = scanner.nextLine();
+//                String searchString = scanner.nextLine();
 
 
 

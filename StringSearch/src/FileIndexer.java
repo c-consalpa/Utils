@@ -29,14 +29,14 @@ public class FileIndexer {
         String line = "";
         int lineNum = 1;
 
-        Map<Integer, Integer> stringOccurence = new HashMap<>();
 
         try (BufferedReader bfReader = new BufferedReader(new FileReader(f));) {
             while (null != (line = bfReader.readLine())) {
                 Map<Integer, String> occurrences = searchOccurrences(line, str);
                 if (occurrences.size() > 0) {
                     for (Integer i: occurrences.keySet()) {
-                        res.add(new SearchResult(str, f, lineNum));
+                        String occurrenceString = occurrences.get(i);
+                        res.add(new SearchResult(str, f, lineNum, i, occurrenceString));
                     }
 
                 }
@@ -62,14 +62,15 @@ public class FileIndexer {
     }
 
     private Map<Integer, String> searchOccurrences(String line, String pattern) {
-        if (line.isEmpty() || line.length() < pattern.length()) return null;
         Map<Integer, String> occurrenceMap = new LinkedHashMap<>();
+        if (line.isEmpty() || line.length() < pattern.length()) return occurrenceMap;
+
         int matchIndex = 0;
         int cnt = 0;
 //search for string occurrance in a line
         while ((matchIndex = line.indexOf(pattern, matchIndex))!= -1) {
 
-            String surroundingStr = getSurroundingString(line.substring(matchIndex), line.length(), pattern);
+            String surroundingStr = getSurroundingString(line, pattern, matchIndex);
 //            Once we find "abc" => move 3 indexes forward;
             occurrenceMap.put(matchIndex, surroundingStr);
             matchIndex += pattern.length() - 1;
@@ -80,8 +81,34 @@ public class FileIndexer {
         return occurrenceMap;
     }
 
-    private String getSurroundingString(String substring, int length, String pattern) {
-        return "testSurrString";
+    private static String getSurroundingString(String line, String pattern, int matchIndex) {
+//        The method returns the pattern with nearby surrounding chars, e.g.: abcd*pattern*zyz...
+        StringBuilder sb = new StringBuilder();
+//      defines how much chars to show before and after the pattern
+        int bounds = 20;
+
+//        get chars before pattern
+        int charsbefore = matchIndex;
+        if (charsbefore > bounds) {
+            sb.append("...");
+            sb.append(line, (matchIndex - bounds), matchIndex);
+        } else {
+            sb.append(line, 0, charsbefore);
+        }
+
+//add pattern itself
+        sb.append("*" + pattern + "*");
+
+//      get chars after the pattern
+        int charsafter = line.length() - (matchIndex + pattern.length());
+        if (charsafter <= bounds) {
+            sb.append(line, (matchIndex + pattern.length()), line.length());
+        } else {
+            sb.append(line, (matchIndex + pattern.length()), (matchIndex + pattern.length() + bounds));
+            sb.append("...");
+        }
+
+        return sb.toString();
     }
 
     private List<File> traverseDir(File startDir) {
