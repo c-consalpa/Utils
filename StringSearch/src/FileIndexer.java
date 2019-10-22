@@ -2,18 +2,18 @@
 import java.util.*;
 
 
-public class FileIndexer {
+class FileIndexer {
     private File searchArea;
 
-    public FileIndexer() {
+    FileIndexer() {
 
     }
 
-    public void setSearchScope(String src) {
+    void setSearchScope(String src) {
         this.searchArea = new File(src);
     }
 
-    public List<SearchResult> search(String pattern) {
+    List<SearchResult> search(String pattern) {
         List<SearchResult> result;
 
         if (searchArea.isDirectory()) {
@@ -24,7 +24,7 @@ public class FileIndexer {
         return result;
     }
 
-    public List<SearchResult> searchInFile(File f, String str)  {
+    private List<SearchResult> searchInFile(File f, String str)  {
         List<SearchResult> res = new ArrayList<>();
         String line = "";
         int lineNum = 1;
@@ -50,9 +50,7 @@ public class FileIndexer {
         return res;
     }
 
-
-
-    public List<SearchResult> searchInDirectory(File searchArea, String str) {
+    private List<SearchResult> searchInDirectory(File searchArea, String str) {
         List<SearchResult> res = new ArrayList<>();
         List<File> dirContents = traverseDir(this.searchArea);
         for (File f : dirContents) {
@@ -132,6 +130,5 @@ public class FileIndexer {
         result.addAll(filesInDirectory);
         return result;
     }
-
 
 }
